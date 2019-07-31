@@ -14,7 +14,7 @@ server.get('/', (req, res) => {
 function logger(req, res, next) {
   console.log(`method: ${req.method}`);
   console.log(`path: ${req.url}`);
-  console.log(`time: ${new Date().toISOString}`);
+  console.log(`time: ${new Date().toISOString()}`);
   next();
 }
 
