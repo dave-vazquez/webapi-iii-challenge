@@ -1,3 +1,5 @@
-// code away!
+const server = require('./server');
 
-// initial commit
+server.listen(5000, () => {
+  console.log('listening on port 5000.');
+});
