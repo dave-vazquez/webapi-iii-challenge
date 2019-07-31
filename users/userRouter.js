@@ -78,9 +78,23 @@ router.get('/:id/posts', validateUserId, (req, res) => {
     });
 });
 
-router.delete('/:id', (req, res) => {});
+router.delete('/:id', validateUserId, (req, res) => {
+  const id = req.user.id;
 
-router.put('/:id', (req, res) => {});
+  userDb
+    .remove(id)
+    .then(user => {
+      res.status(200).json({
+        success: true,
+        user
+      });
+    })
+    .catch(err => {
+      success: false, err;
+    });
+});
+
+router.put('/:id', validateUserId, (req, res) => {});
 
 //custom middleware
 async function validateUserId(req, res, next) {
