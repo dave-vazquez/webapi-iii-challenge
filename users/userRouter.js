@@ -1,10 +1,47 @@
 const express = require('express');
 const router = express.Router();
 const userDb = require('../users/userDb');
+const postDb = require('../posts/postDb');
 
-router.post('/', (req, res) => {});
+router.post('/', validateUser, (req, res) => {
+  userDb
+    .insert(req.user)
+    .then(user => {
+      res.status(201).json({
+        success: true,
+        user
+      });
+    })
+    .catch(err => {
+      res.status(500).json({
+        success: false,
+        err
+      });
+    });
+});
 
-router.post('/:id/posts', (req, res) => {});
+router.post('/:id/posts', validatePost, (req, res) => {
+  const user_id = req.params.id;
+  const text = req.post.text;
+
+  postDb
+    .insert({
+      text,
+      user_id
+    })
+    .then(post => {
+      res.status(201).json({
+        success: true,
+        post
+      });
+    })
+    .catch(err => {
+      res.status(500).json({
+        success: false,
+        err
+      });
+    });
+});
 
 router.get('/', (req, res) => {
   userDb.get().then(users => {
@@ -24,6 +61,7 @@ router.get('/:id', validateUserId, (req, res) => {
 
 router.get('/:id/posts', validateUserId, (req, res) => {
   const id = req.user.id;
+
   userDb
     .getUserPosts(id)
     .then(posts => {
@@ -67,8 +105,31 @@ async function validateUserId(req, res, next) {
   }
 }
 
-function validateUser(req, res, next) {}
+function validateUser(req, res, next) {
+  const user = req.body;
 
-function validatePost(req, res, next) {}
+  if (!user.name) {
+    res.status(400).json({
+      success: false,
+      message: 'Please provide a name for the user.'
+    });
+  } else {
+    req.user = user;
+    next();
+  }
+}
+
+function validatePost(req, res, next) {
+  const post = req.body;
+  if (!post.text) {
+    res.status(400).json({
+      success: false,
+      message: 'Please provide text for the post.'
+    });
+  } else {
+    req.post = post;
+    next();
+  }
+}
 
 module.exports = router;
