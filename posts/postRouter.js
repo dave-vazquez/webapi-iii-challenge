@@ -90,6 +90,7 @@ async function validatePostId(req, res, next) {
 
 function validateRequestBody(req, res, next) {
   const post = req.body;
+
   if (!post.text || !post.user_id) {
     res.status(400).json({
       success: false,
