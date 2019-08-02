@@ -3,6 +3,9 @@ const router = express.Router();
 const userDb = require('../users/userDb');
 const postDb = require('../posts/postDb');
 
+/********************************************************
+ *                     GET api/users                    *
+ ********************************************************/
 router.get('/', (req, res) => {
   userDb.get().then(users => {
     res.status(200).json({
@@ -12,6 +15,9 @@ router.get('/', (req, res) => {
   });
 });
 
+/********************************************************
+ *                   GET api/users/:id                  *
+ ********************************************************/
 router.get('/:id', validateUserId, (req, res) => {
   res.status(200).json({
     success: true,
@@ -19,6 +25,9 @@ router.get('/:id', validateUserId, (req, res) => {
   });
 });
 
+/********************************************************
+ *                GET api/users/:id/posts               *
+ ********************************************************/
 router.get('/:id/posts', validateUserId, (req, res) => {
   const id = req.user.id;
 
@@ -38,6 +47,9 @@ router.get('/:id/posts', validateUserId, (req, res) => {
     });
 });
 
+/********************************************************
+ *                    POST api/users/                   *
+ ********************************************************/
 router.post('/', validateUser, (req, res) => {
   userDb
     .insert(req.user)
@@ -55,6 +67,9 @@ router.post('/', validateUser, (req, res) => {
     });
 });
 
+/********************************************************
+ *                POST api/users/:id/posts              *
+ ********************************************************/
 router.post('/:id/posts', validatePost, (req, res) => {
   const user_id = req.params.id;
   const text = req.post.text;
@@ -78,8 +93,11 @@ router.post('/:id/posts', validatePost, (req, res) => {
     });
 });
 
-router.put('/:id', validateUserId, (req, res) => {
-  const id = req.user.id;
+/********************************************************
+ *                    PUT api/users/:id                 *
+ ********************************************************/
+router.put('/:id', validateUserId, validateUser, (req, res) => {
+  const id = req.params.id;
   const user = req.user;
 
   userDb
@@ -98,6 +116,9 @@ router.put('/:id', validateUserId, (req, res) => {
     });
 });
 
+/********************************************************
+ *                  DELETE api/users/:id                *
+ ********************************************************/
 router.delete('/:id', validateUserId, (req, res) => {
   const id = req.user.id;
 
@@ -110,11 +131,16 @@ router.delete('/:id', validateUserId, (req, res) => {
       });
     })
     .catch(err => {
-      success: false, err;
+      res.status(500).json({
+        success: false,
+        err
+      });
     });
 });
 
-//custom middleware
+/********************************************************
+ *                      MIDDLE-WARE                     *
+ ********************************************************/
 async function validateUserId(req, res, next) {
   try {
     const id = req.params.id;
