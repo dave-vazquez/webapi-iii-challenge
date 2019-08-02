@@ -3,6 +3,41 @@ const router = express.Router();
 const userDb = require('../users/userDb');
 const postDb = require('../posts/postDb');
 
+router.get('/', (req, res) => {
+  userDb.get().then(users => {
+    res.status(200).json({
+      success: true,
+      users
+    });
+  });
+});
+
+router.get('/:id', validateUserId, (req, res) => {
+  res.status(200).json({
+    success: true,
+    user: req.user
+  });
+});
+
+router.get('/:id/posts', validateUserId, (req, res) => {
+  const id = req.user.id;
+
+  userDb
+    .getUserPosts(id)
+    .then(posts => {
+      res.status(200).json({
+        success: true,
+        posts
+      });
+    })
+    .catch(err => {
+      res.status(500).json({
+        success: false,
+        err
+      });
+    });
+});
+
 router.post('/', validateUser, (req, res) => {
   userDb
     .insert(req.user)
@@ -43,31 +78,16 @@ router.post('/:id/posts', validatePost, (req, res) => {
     });
 });
 
-router.get('/', (req, res) => {
-  userDb.get().then(users => {
-    res.status(200).json({
-      success: true,
-      users
-    });
-  });
-});
-
-router.get('/:id', validateUserId, (req, res) => {
-  res.status(200).json({
-    success: true,
-    user: req.user
-  });
-});
-
-router.get('/:id/posts', validateUserId, (req, res) => {
+router.put('/:id', validateUserId, (req, res) => {
   const id = req.user.id;
+  const user = req.user;
 
   userDb
-    .getUserPosts(id)
-    .then(posts => {
+    .update(id, user)
+    .then(user => {
       res.status(200).json({
         success: true,
-        posts
+        user
       });
     })
     .catch(err => {
@@ -93,8 +113,6 @@ router.delete('/:id', validateUserId, (req, res) => {
       success: false, err;
     });
 });
-
-router.put('/:id', validateUserId, (req, res) => {});
 
 //custom middleware
 async function validateUserId(req, res, next) {
