@@ -3,7 +3,7 @@ const postsRouter = require('./posts/postRouter');
 const usersRouter = require('./users/userRouter');
 const server = express();
 
-const motd = proceess.env.MOTD ? process.env.MOTD : 'No message today';
+const motd = process.env.MOTD ? process.env.MOTD : 'No message today';
 
 server.use(express.json());
 server.use(logger);
