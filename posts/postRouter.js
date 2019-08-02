@@ -2,6 +2,9 @@ const express = require('express');
 const postDb = require('./postDb');
 const router = express.Router();
 
+/********************************************************
+ *                      GET api/posts                   *
+ ********************************************************/
 router.get('/', (req, res) => {
   postDb
     .get()
@@ -19,6 +22,9 @@ router.get('/', (req, res) => {
     });
 });
 
+/********************************************************
+ *                    GET api/posts/:id                 *
+ ********************************************************/
 router.get('/:id', validatePostId, (req, res) => {
   res.status(200).json({
     success: true,
@@ -26,6 +32,9 @@ router.get('/:id', validatePostId, (req, res) => {
   });
 });
 
+/********************************************************
+ *                  DELETE api/posts/:id                *
+ ********************************************************/
 router.delete('/:id', validatePostId, (req, res) => {
   const id = req.post.id;
   postDb
@@ -44,6 +53,9 @@ router.delete('/:id', validatePostId, (req, res) => {
     });
 });
 
+/********************************************************
+ *                    PUT api/posts/:id                 *
+ ********************************************************/
 router.put('/:id', validatePostId, validateRequestBody, (req, res) => {
   const id = req.params.id;
   const post = req.body;
@@ -65,7 +77,9 @@ router.put('/:id', validatePostId, validateRequestBody, (req, res) => {
     });
 });
 
-//custom middleware
+/********************************************************
+ *                      MIDDLE-WARE                     *
+ ********************************************************/
 async function validatePostId(req, res, next) {
   try {
     const id = req.params.id;
