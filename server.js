@@ -11,7 +11,11 @@ server.use('/api/posts', postsRouter);
 server.use('/api/users', usersRouter);
 
 server.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname + '/index.html'));
+  res.send(`
+    <h2>${motd}</h2>
+    <p>Users - api/users<p>
+    <p>Posts - api/posts<p>
+    `);
 });
 
 //custom middleware
