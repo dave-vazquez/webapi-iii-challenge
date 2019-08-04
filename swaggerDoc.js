@@ -30,7 +30,7 @@ const options = {
       }
     ]
   },
-  apis: ['./users/userRouter.js']
+  apis: ['./users/userRouter.js', './posts/postRouter.js']
 };
 
 const specs = swaggerJsdoc(options);
