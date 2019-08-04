@@ -1,11 +1,47 @@
 const express = require('express');
 const router = express.Router();
-const userDb = require('../users/userDb');
+const userDb = require('./userDb');
 const postDb = require('../posts/postDb');
 
-/********************************************************
- *                     GET api/users                    *
- ********************************************************/
+/**
+ * @swagger
+ * /users:
+ *  get:
+ *    tags:
+ *      - users
+ *    summary: represents a user
+ *    description: >
+ *      This resources presents an individual user in the database.
+ *      Each user is identified by a numeric `id`
+ *    responses:
+ *      '200':
+ *        description: all users in database were returned successfully
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                success:
+ *                  type: boolean
+ *                users:
+ *                  type: array
+ *              example:
+ *                success: true
+ *                users:
+ *                  - id: 1
+ *                    name: Frodo Baggins
+ *                  - id: 2
+ *                    name: Samwise Gamgee
+ *                  - id: 3
+ *                    name: Meriadoc Brandybuck
+ *                  - id: 4
+ *                    name: Peregrin Took
+ *      '500':
+ *        description: internal server error
+ *
+ *
+ *
+ */
 router.get('/', (req, res) => {
   userDb.get().then(users => {
     res.status(200).json({
