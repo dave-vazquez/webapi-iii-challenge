@@ -5,116 +5,6 @@ const postDb = require('../posts/postDb');
 
 /**
  * @swagger
- * components:
- *  schemas:
- *    UserList:
- *      type: object
- *      properties:
- *        success:
- *          type: boolean
- *          example: true
- *        users:
- *          type: array
- *          example:
- *            - id: 1
- *              name: Frodo Baggins
- *            - id: 2
- *              name: Samwise Gamgee
- *            - id: 3
- *              name: Meriadoc Brandybuck
- *            - id: 4
- *              name: Peregrin Took
- *    User:
- *      type: object
- *      properties:
- *        success:
- *          type: boolean
- *          example: true
- *        user:
- *          type: object
- *          example:
- *            id: 11
- *            name: Dave Vazquez
- *
- *    NewUser:
- *      type: object
- *      properties:
- *        name:
- *          type: string
- *          example: Mac Demarco
- *
- *    NewPost:
- *      type: object
- *      properties:
- *        text:
- *          type: string
- *          example: This is a new post.
- *
- *    Posts:
- *      type: object
- *      properties:
- *        success:
- *          type: boolean
- *          example: true
- *        user:
- *          type: object
- *          example:
- *    Post:
- *      type: object
- *      properties:
- *        success:
- *          type: boolean
- *          example: true
- *        post:
- *          type: object
- *          example:
- *            id: 43,
- *            text: This is a new post.
- *            user_id: 11
- *
- *    NotFoundError:
- *      type: object
- *      properties:
- *        success:
- *          type: boolean
- *          example: false
- *        message:
- *          type: string
- *          example: A user by that id was not found.
- *
- *    BadRequestError:
- *      type: object
- *      properties:
- *        success:
- *          type: boolean
- *          example: false
- *        message:
- *          type: string
- *          example: Please provide a name for the user.
- *
- *    BadRequestErrorNewPost:
- *      type: object
- *      properties:
- *        success:
- *          type: boolean
- *          example: false
- *        message:
- *          type: string
- *          example: Please provide text for the post.
- *
- *    ServerError:
- *      type: object
- *      properties:
- *        success:
- *          type: boolean
- *          example: false
- *        err:
- *          type: object
- *          example: // error object returned by database
- */
-
-/**
- * @swagger
  * /users:
  *  get:
  *    tags:
@@ -212,7 +102,7 @@ router.get('/:id', validateUserId, (req, res) => {
  *    summary: Represents all **posts** created by a single **user**.
  *    description: >
  *      This resources presents all **posts** created by a single **user** in the database.
- *      The user is identified by a numeric `id`
+ *      The user is identified by a numeric `id`.
  *    parameters:
  *      - in: path
  *        name: id
@@ -287,14 +177,14 @@ router.get('/:id/posts', validateUserId, (req, res) => {
  *      content:
  *        application/json:
  *          schema:
- *            $ref: '#/components/schemas/NewPost'
+ *            $ref: '#/components/schemas/NewUser'
  *    responses:
  *      '201':
- *        description: A new **post** was created successfully.
+ *        description: A new **user** was created successfully.
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/Post'
+ *              $ref: '#/components/schemas/User'
  *      '400':
  *        description: The request body is invalid.
  *        content:
@@ -354,7 +244,7 @@ router.post('/', validateUser, (req, res) => {
  *            $ref: '#/components/schemas/NewPost'
  *    responses:
  *      '201':
- *        description: A new **user** was created successfully.
+ *        description: A new **post** was successfully created.
  *        content:
  *          application/json:
  *            schema:
@@ -399,6 +289,52 @@ router.post('/:id/posts', validatePost, (req, res) => {
 /********************************************************
  *                    PUT api/users/:id                 *
  ********************************************************/
+
+/**
+ * @swagger
+ * /users/{id}:
+ *  put:
+ *    tags:
+ *      - users
+ *    summary: Updates an existing user.
+ *    description: >
+ *      This request updates an existing **user** in the database.
+ *      The user is identified by a numeric `id`.
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: integer
+ *        required: true
+ *        description: Numeric `id` of the **user**
+ *    requestBody:
+ *      description: Represents a new **user** defined by a single `name` field to replace the *existing* **user**.
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/NewUser'
+ *    responses:
+ *      '200':
+ *        description: The **user** was succesfully updated.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/UpdatedUser'
+ *      '400':
+ *        description: The request body is invalid.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/BadRequestErrorNewUser'
+ *      '500':
+ *        description: Internal Server Error.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ServerError'
+ */
+
 router.put('/:id', validateUserId, validateUser, (req, res) => {
   const id = req.params.id;
   const user = req.user;
@@ -422,6 +358,38 @@ router.put('/:id', validateUserId, validateUser, (req, res) => {
 /********************************************************
  *                  DELETE api/users/:id                *
  ********************************************************/
+
+/**
+ * @swagger
+ * /users/{id}:
+ *  delete:
+ *    tags:
+ *      - users
+ *    summary: Removes a user from the database.
+ *    description: >
+ *      This request removes an existing users from the database.
+ *      The user is identified by a numeric `id`.
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: integer
+ *        required: true
+ *        description: Numeric `id` of the **user**.
+ *    responses:
+ *      '200':
+ *        description: The user was successfully removed from the database.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/RemovedUser'
+ *      '500':
+ *        description: Internal Server Error.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ServerError'
+ */
 router.delete('/:id', validateUserId, (req, res) => {
   const id = req.user.id;
 
@@ -492,5 +460,150 @@ function validatePost(req, res, next) {
     next();
   }
 }
+
+/********************************************************
+ *                  SWAGGER COMPONENTS                  *
+ ********************************************************/
+
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *    UserList:
+ *      type: object
+ *      properties:
+ *        success:
+ *          type: boolean
+ *          example: true
+ *        users:
+ *          type: array
+ *          example:
+ *            - id: 1
+ *              name: Frodo Baggins
+ *            - id: 2
+ *              name: Samwise Gamgee
+ *            - id: 3
+ *              name: Meriadoc Brandybuck
+ *            - id: 4
+ *              name: Peregrin Took
+ *    User:
+ *      type: object
+ *      properties:
+ *        success:
+ *          type: boolean
+ *          example: true
+ *        user:
+ *          type: object
+ *          example:
+ *            id: 11
+ *            name: Dave Vazquez
+ *
+ *    RemovedUser:
+ *      type: object
+ *      properties:
+ *        success:
+ *          type: boolean
+ *          example: true
+ *        user:
+ *          type: integer
+ *          example:
+ *            id: 13
+ *
+ *    UpdatedUser:
+ *      type: object
+ *      properties:
+ *        success:
+ *          type: boolean
+ *          example: true
+ *        user:
+ *          type: integer
+ *          example: 11
+ *
+ *    NewUser:
+ *      type: object
+ *      properties:
+ *        name:
+ *          type: string
+ *          example: Mac Demarco
+ *
+ *    NewPost:
+ *      type: object
+ *      properties:
+ *        text:
+ *          type: string
+ *          example: This is a new post.
+ *
+ *    Posts:
+ *      type: object
+ *      properties:
+ *        success:
+ *          type: boolean
+ *          example: true
+ *        user:
+ *          type: object
+ *          example:
+ *    Post:
+ *      type: object
+ *      properties:
+ *        success:
+ *          type: boolean
+ *          example: true
+ *        post:
+ *          type: object
+ *          example:
+ *            id: 43,
+ *            text: This is a new post.
+ *            user_id: 11
+ *
+ *    NotFoundError:
+ *      type: object
+ *      properties:
+ *        success:
+ *          type: boolean
+ *          example: false
+ *        message:
+ *          type: string
+ *          example: A user by that id was not found.
+ *
+ *    BadRequestError:
+ *      type: object
+ *      properties:
+ *        success:
+ *          type: boolean
+ *          example: false
+ *        message:
+ *          type: string
+ *          example: Please provide a name for the user.
+ *
+ *    BadRequestErrorNewPost:
+ *      type: object
+ *      properties:
+ *        success:
+ *          type: boolean
+ *          example: false
+ *        message:
+ *          type: string
+ *          example: Please provide text for the post.
+ *
+ *    BadRequestErrorNewUser:
+ *      type: object
+ *      properties:
+ *        success:
+ *          type: boolean
+ *          example: false
+ *        message:
+ *          type: string
+ *          example: Please provide a name for the user.
+ *
+ *    ServerError:
+ *      type: object
+ *      properties:
+ *        success:
+ *          type: boolean
+ *          example: false
+ *        err:
+ *          type: object
+ *          example: // error object returned by database
+ */
 
 module.exports = router;
