@@ -99,7 +99,7 @@ router.get('/:id', validateUserId, (req, res) => {
  *  get:
  *    tags:
  *      - users
- *    summary: Represents all **posts** created by a single **user**.
+ *    summary: Represents all posts created by a specified user.
  *    description: >
  *      This resources presents all **posts** created by a single **user** in the database.
  *      The user is identified by a numeric `id`.
@@ -168,7 +168,7 @@ router.get('/:id/posts', validateUserId, (req, res) => {
  *  post:
  *    tags:
  *      - users
- *    summary: Adds a new **user** to the database.
+ *    summary: Adds a new user to the database.
  *    description: >
  *      This request adds a new **user** to the database.
  *    requestBody:
@@ -225,7 +225,7 @@ router.post('/', validateUser, (req, res) => {
  *  post:
  *    tags:
  *      - users
- *    summary: Adds a new **post** to the database.
+ *    summary: Adds a new post to the database.
  *    description: >
  *      This request adds a new **post** to the database created by a **user**.
  *    parameters:
@@ -241,14 +241,14 @@ router.post('/', validateUser, (req, res) => {
  *      content:
  *        application/json:
  *          schema:
- *            $ref: '#/components/schemas/NewPost'
+ *            $ref: '#/components/schemas/NewPostBody'
  *    responses:
  *      '201':
  *        description: A new **post** was successfully created.
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/Post'
+ *              $ref: '#/components/schemas/NewPostResponse'
  *      '400':
  *        description: The request body is invalid.
  *        content:
@@ -526,7 +526,7 @@ function validatePost(req, res, next) {
  *          type: string
  *          example: Mac Demarco
  *
- *    NewPost:
+ *    NewPostBody:
  *      type: object
  *      properties:
  *        text:
@@ -542,7 +542,8 @@ function validatePost(req, res, next) {
  *        user:
  *          type: object
  *          example:
- *    Post:
+ *
+ *    NewPostResponse:
  *      type: object
  *      properties:
  *        success:
