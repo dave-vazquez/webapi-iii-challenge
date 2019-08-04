@@ -26,7 +26,7 @@ const options = {
     },
     servers: [
       {
-        url: 'https://lambda-posts.herokuapp.com/api'
+        url: 'https://lambda-posts.herokuapp.com/'
       }
     ]
   },
