@@ -5,7 +5,7 @@ const postDb = require('../posts/postDb');
 
 /**
  * @swagger
- * /users:
+ * /api/users:
  *  get:
  *    tags:
  *      - users
@@ -42,7 +42,7 @@ router.get('/', (req, res) => {
 
 /**
  * @swagger
- * /users/{id}:
+ * /api/users/{id}:
  *  get:
  *    tags:
  *      - users
@@ -95,7 +95,7 @@ router.get('/:id', validateUserId, (req, res) => {
 
 /**
  * @swagger
- * /users/{id}/posts:
+ * /api/users/{id}/posts:
  *  get:
  *    tags:
  *      - users
@@ -164,7 +164,7 @@ router.get('/:id/posts', validateUserId, (req, res) => {
 
 /**
  * @swagger
- * /users:
+ * /api/users:
  *  post:
  *    tags:
  *      - users
@@ -221,7 +221,7 @@ router.post('/', validateUser, (req, res) => {
 
 /**
  * @swagger
- * /users/{id}/posts:
+ * /api/users/{id}/posts:
  *  post:
  *    tags:
  *      - users
@@ -292,7 +292,7 @@ router.post('/:id/posts', validatePost, (req, res) => {
 
 /**
  * @swagger
- * /users/{id}:
+ * /api/users/{id}:
  *  put:
  *    tags:
  *      - users
@@ -361,7 +361,7 @@ router.put('/:id', validateUserId, validateUser, (req, res) => {
 
 /**
  * @swagger
- * /users/{id}:
+ * /api/users/{id}:
  *  delete:
  *    tags:
  *      - users
