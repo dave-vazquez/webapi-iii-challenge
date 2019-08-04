@@ -7,7 +7,7 @@ const router = express.Router();
  ********************************************************/
 /**
  * @swagger
- * /posts:
+ * /api/posts:
  *  get:
  *    tags:
  *      - posts
@@ -52,7 +52,7 @@ router.get('/', (req, res) => {
 
 /**
  * @swagger
- * /posts/{id}:
+ * /api/posts/{id}:
  *  get:
  *    tags:
  *      - posts
@@ -105,7 +105,7 @@ router.get('/:id', validatePostId, (req, res) => {
 
 /**
  * @swagger
- * /posts/{id}:
+ * /api/posts/{id}:
  *  put:
  *    tags:
  *      - posts
@@ -175,7 +175,7 @@ router.put('/:id', validatePostId, validateRequestBody, (req, res) => {
 
 /**
  * @swagger
- * /posts/{id}:
+ * /api/posts/{id}:
  *  delete:
  *    tags:
  *      - posts
