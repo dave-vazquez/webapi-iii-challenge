@@ -1,9 +1,0 @@
-components:
-  schemas:
-    UserList:
-      type: object
-      properties:
-        success:
-          type: boolean
-        users:
-          type: array
