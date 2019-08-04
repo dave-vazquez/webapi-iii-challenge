@@ -1,0 +1,12 @@
+components:
+  examples:
+    success: true
+    users:
+      - id: 1
+        name: Frodo Baggins
+      - id: 2
+        name: Samwise Gamgee
+      - id: 3
+        name: Meriadoc Brandybuck
+      - id: 4
+        name: Peregrin Took
