@@ -7,7 +7,9 @@ const description = `
 
 This is the work of an assignment given to students in [Lambda School's](https://go.lambdaschool.com) [Full Stack Web Development Track](https://lambdaschool.com/courses/full-stack-web-development), as a part of their Back-End curriculum.
 
-A link to the repository for this API can be found [here](https://github.com/dave-vazquez/webapi-iii-challenge/tree/dave-vazquez).`;
+A link to the repository for this API can be found [here](https://github.com/dave-vazquez/webapi-iii-challenge/tree/dave-vazquez).
+
+A link to the [Postman](https://www.getpostman.com) documentation can be found [here](https://grey-satellite-4989-1.postman.co/collections/8230639-d47775b5-9080-48f6-9c42-980020fd3052?version=latest&workspace=39c42fd9-c654-44a4-8c5c-22ed3a3db60d)`;
 
 const options = {
   swaggerDefinition: {
