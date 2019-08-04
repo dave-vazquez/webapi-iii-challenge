@@ -12,22 +12,105 @@ const postDb = require('../posts/postDb');
  *      properties:
  *        success:
  *          type: boolean
+ *          example: true
  *        users:
  *          type: array
- *        example:
+ *          example:
+ *            - id: 1
+ *              name: Frodo Baggins
+ *            - id: 2
+ *              name: Samwise Gamgee
+ *            - id: 3
+ *              name: Meriadoc Brandybuck
+ *            - id: 4
+ *              name: Peregrin Took
+ *    User:
+ *      type: object
+ *      properties:
+ *        success:
+ *          type: boolean
+ *          example: true
+ *        user:
+ *          type: object
+ *          example:
+ *            id: 11
+ *            name: Dave Vazquez
  *
- *  examples:
- *    UserList:
- *      success: true
- *      users:
- *        - id: 1
- *          name: Frodo Baggins
- *        - id: 2
- *          name: Samwise Gamgee
- *        - id: 3
- *          name: Meriadoc Brandybuck
- *        - id: 4
- *          name: Peregrin Took
+ *    NewUser:
+ *      type: object
+ *      properties:
+ *        name:
+ *          type: string
+ *          example: Mac Demarco
+ *
+ *    NewPost:
+ *      type: object
+ *      properties:
+ *        text:
+ *          type: string
+ *          example: This is a new post.
+ *
+ *    Posts:
+ *      type: object
+ *      properties:
+ *        success:
+ *          type: boolean
+ *          example: true
+ *        user:
+ *          type: object
+ *          example:
+ *    Post:
+ *      type: object
+ *      properties:
+ *        success:
+ *          type: boolean
+ *          example: true
+ *        post:
+ *          type: object
+ *          example:
+ *            id: 43,
+ *            text: This is a new post.
+ *            user_id: 11
+ *
+ *    NotFoundError:
+ *      type: object
+ *      properties:
+ *        success:
+ *          type: boolean
+ *          example: false
+ *        message:
+ *          type: string
+ *          example: A user by that id was not found.
+ *
+ *    BadRequestError:
+ *      type: object
+ *      properties:
+ *        success:
+ *          type: boolean
+ *          example: false
+ *        message:
+ *          type: string
+ *          example: Please provide a name for the user.
+ *
+ *    BadRequestErrorNewPost:
+ *      type: object
+ *      properties:
+ *        success:
+ *          type: boolean
+ *          example: false
+ *        message:
+ *          type: string
+ *          example: Please provide text for the post.
+ *
+ *    ServerError:
+ *      type: object
+ *      properties:
+ *        success:
+ *          type: boolean
+ *          example: false
+ *        err:
+ *          type: object
+ *          example: // error object returned by database
  */
 
 /**
@@ -36,23 +119,23 @@ const postDb = require('../posts/postDb');
  *  get:
  *    tags:
  *      - users
- *    summary: represents a user
+ *    summary: Represents all users in the database.
  *    description: >
- *      This resources presents an individual user in the database.
- *      Each user is identified by a numeric `id`
+ *      This resources presents all users in the database.
+ *      Each user is identified by a number `id`.
  *    responses:
  *      '200':
- *        description: all users in database were returned successfully
+ *        description: All users in database were returned successfully.
  *        content:
  *          application/json:
  *            schema:
  *              $ref: '#/components/schemas/UserList'
- *            example:
- *              UserList:
- *                $ref: '#/components/examples/UserList'
- *
- *
- *
+ *      '500':
+ *        description: Internal Server Error.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ServerError'
  */
 router.get('/', (req, res) => {
   userDb.get().then(users => {
@@ -66,6 +149,49 @@ router.get('/', (req, res) => {
 /********************************************************
  *                   GET api/users/:id                  *
  ********************************************************/
+
+/**
+ * @swagger
+ * /users/{id}:
+ *  get:
+ *    tags:
+ *      - users
+ *    summary: Represents a single user.
+ *    description: >
+ *      This resources presents an individual **user** in the database.
+ *      The user is identified by a numeric `id`
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: integer
+ *        required: true
+ *        description: Numeric `id of the **user** to get
+ *    responses:
+ *      '200':
+ *        description: A **user** was returned successfuly.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/User'
+ *            example:
+ *              success: true
+ *              users:
+ *                id: 11
+ *                name: Dave Vazquez
+ *      '404':
+ *        description: A **user** by the specified id was not found.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/NotFoundError'
+ *      '500':
+ *        description: Internal Server Error.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ServerError'
+ */
 router.get('/:id', validateUserId, (req, res) => {
   res.status(200).json({
     success: true,
@@ -76,6 +202,53 @@ router.get('/:id', validateUserId, (req, res) => {
 /********************************************************
  *                GET api/users/:id/posts               *
  ********************************************************/
+
+/**
+ * @swagger
+ * /users/{id}/posts:
+ *  get:
+ *    tags:
+ *      - users
+ *    summary: Represents all **posts** created by a single **user**.
+ *    description: >
+ *      This resources presents all **posts** created by a single **user** in the database.
+ *      The user is identified by a numeric `id`
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: integer
+ *        required: true
+ *        description: Numeric `id` of the **user**
+ *    responses:
+ *      '200':
+ *        description: All **posts** were returned successfully.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Posts'
+ *            example:
+ *              success: true
+ *              posts:
+ *                - id: 41
+ *                  text: ayo whaddup
+ *                  postedBy: "Dave Vazquez"
+ *                - id: 42
+ *                  text: chillin
+ *                  postedBy: "Dave Vazquez"
+ *      '404':
+ *        description: A **user** by the specified `id` was not found.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/NotFoundError'
+ *      '500':
+ *        description: Internal Server Error.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ServerError'
+ */
 router.get('/:id/posts', validateUserId, (req, res) => {
   const id = req.user.id;
 
@@ -98,6 +271,43 @@ router.get('/:id/posts', validateUserId, (req, res) => {
 /********************************************************
  *                    POST api/users/                   *
  ********************************************************/
+
+/**
+ * @swagger
+ * /users:
+ *  post:
+ *    tags:
+ *      - users
+ *    summary: Adds a new **user** to the database.
+ *    description: >
+ *      This request adds a new **user** to the database.
+ *    requestBody:
+ *      description: Represents a new **user** defined by a single `name` field.
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/NewPost'
+ *    responses:
+ *      '201':
+ *        description: A new **post** was created successfully.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Post'
+ *      '400':
+ *        description: The request body is invalid.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/BadRequestError'
+ *      '500':
+ *        description: Internal Server Error.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ServerError'
+ */
 router.post('/', validateUser, (req, res) => {
   userDb
     .insert(req.user)
@@ -118,6 +328,51 @@ router.post('/', validateUser, (req, res) => {
 /********************************************************
  *                POST api/users/:id/posts              *
  ********************************************************/
+
+/**
+ * @swagger
+ * /users/{id}/posts:
+ *  post:
+ *    tags:
+ *      - users
+ *    summary: Adds a new **post** to the database.
+ *    description: >
+ *      This request adds a new **post** to the database created by a **user**.
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: integer
+ *        required: true
+ *        description: Numeric `id` of the **user**
+ *    requestBody:
+ *      description: Represents a new **post** defined by a single `text` field.
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/NewPost'
+ *    responses:
+ *      '201':
+ *        description: A new **user** was created successfully.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Post'
+ *      '400':
+ *        description: The request body is invalid.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/BadRequestErrorNewPost'
+ *      '500':
+ *        description: Internal Server Error.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ServerError'
+ */
+
 router.post('/:id/posts', validatePost, (req, res) => {
   const user_id = req.params.id;
   const text = req.post.text;
