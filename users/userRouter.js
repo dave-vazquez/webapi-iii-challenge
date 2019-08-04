@@ -5,6 +5,33 @@ const postDb = require('../posts/postDb');
 
 /**
  * @swagger
+ * components:
+ *  schemas:
+ *    UserList:
+ *      type: object
+ *      properties:
+ *        success:
+ *          type: boolean
+ *        users:
+ *          type: array
+ *        example:
+ *
+ *  examples:
+ *    UserList:
+ *      success: true
+ *      users:
+ *        - id: 1
+ *          name: Frodo Baggins
+ *        - id: 2
+ *          name: Samwise Gamgee
+ *        - id: 3
+ *          name: Meriadoc Brandybuck
+ *        - id: 4
+ *          name: Peregrin Took
+ */
+
+/**
+ * @swagger
  * /users:
  *  get:
  *    tags:
@@ -19,25 +46,10 @@ const postDb = require('../posts/postDb');
  *        content:
  *          application/json:
  *            schema:
- *              type: object
- *              properties:
- *                success:
- *                  type: boolean
- *                users:
- *                  type: array
- *              example:
- *                success: true
- *                users:
- *                  - id: 1
- *                    name: Frodo Baggins
- *                  - id: 2
- *                    name: Samwise Gamgee
- *                  - id: 3
- *                    name: Meriadoc Brandybuck
- *                  - id: 4
- *                    name: Peregrin Took
- *      '500':
- *        description: internal server error
+ *              $ref: '#/components/schemas/UserList'
+ *            example:
+ *              UserList:
+ *                $ref: '#/components/examples/UserList'
  *
  *
  *
